@@ -1,0 +1,34 @@
+on:
+  workflow_call:
+jobs:
+  push:
+    name: Push
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Set environment
+      run: |
+        echo "REGISTRY=ghcr.io" >> $GITHUB_ENV
+        echo "GITHUB_REF=${{ github.ref }}" >> $GITHUB_ENV
+        echo "GITHUB_REPOSITORY=${{ github.repository }}" >> $GITHUB_ENV
+    - name: Process environment
+      run: |
+        echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+        echo "REPOSITORY_OWNER=${GITHUB_REPOSITORY%/*}" >> $GITHUB_ENV
+        echo "REPOSITORY_NAME=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
+    - name: Checkout
+      uses: actions/checkout@v2.4.0
+    - name: Install helm
+      uses: azure/setup-helm@v1.1
+    - name: Login helm
+      env:
+        HELM_EXPERIMENTAL_OCI: 1
+      run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login $REGISTRY --username $REPOSITORY_OWNER --password-stdin
+    - name: Package and push helm
+      working-directory: ./helm
+      env:
+        HELM_EXPERIMENTAL_OCI: 1
+      run: |
+        helm package .
+        helm push ${REPOSITORY_NAME}-${VERSION}.tgz oci://$REGISTRY/$REPOSITORY_OWNER/helm
+

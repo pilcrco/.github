@@ -1,0 +1,27 @@
+on:
+  workflow_call:
+jobs:
+  push:
+    name: Push
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Set environment
+      run: |
+        echo "REGISTRY=ghcr.io" >> $GITHUB_ENV
+        echo "GITHUB_REF=${{ github.ref }}" >> $GITHUB_ENV
+        echo "GITHUB_REPOSITORY=${{ github.repository }}" >> $GITHUB_ENV
+    - name: Process environment
+      run: |
+        echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+        echo "REPOSITORY_OWNER=${GITHUB_REPOSITORY%/*}" >> $GITHUB_ENV
+        echo "REPOSITORY_NAME=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
+    - name: Checkout
+      uses: actions/checkout@v2.4.0
+    - name: Login Docker
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login $REGISTRY -u $REPOSITORY_OWNER --password-stdin
+    - name: Build and push docker
+      run: |
+        docker build . --file Dockerfile --tag $REGISTRY/$REPOSITORY_OWNER/$REPOSITORY_NAME
+        docker tag $REGISTRY/$REPOSITORY_OWNER/$REPOSITORY_NAME $REGISTRY/$REPOSITORY_OWNER/$REPOSITORY_NAME:$TAG
+        docker push $REGISTRY/$REPOSITORY_OWNER/$REPOSITORY_NAME:$TAG

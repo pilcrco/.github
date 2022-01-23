@@ -1,0 +1,16 @@
+on:
+  workflow_call:
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.4.0
+    - name: Lint npm
+      run: |
+        npm ci
+        npm run prettier
+        npm run eslint
+        npm run stylelint
+        npm run type-check
