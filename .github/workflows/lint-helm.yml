@@ -9,6 +9,11 @@ jobs:
       uses: actions/checkout@v2.4.0
     - name: Install helm
       uses: azure/setup-helm@v1.1
+    - name: Upgrade helm deps
+      env:
+        HELM_EXPERIMENTAL_OCI: 1
+      working-directory: ./helm
+      run: helm dep up
     - name: Lint helm
       working-directory: ./helm
       run: |

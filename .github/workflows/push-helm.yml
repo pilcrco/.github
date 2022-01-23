@@ -24,6 +24,11 @@ jobs:
       env:
         HELM_EXPERIMENTAL_OCI: 1
       run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login $REGISTRY --username $REPOSITORY_OWNER --password-stdin
+    - name: Upgrade helm deps
+      env:
+        HELM_EXPERIMENTAL_OCI: 1
+      working-directory: ./helm
+      run: helm dep up
     - name: Package and push helm
       working-directory: ./helm
       env:
