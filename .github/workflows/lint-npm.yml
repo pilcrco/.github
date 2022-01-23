@@ -10,7 +10,7 @@ jobs:
     - name: Lint npm
       run: |
         npm ci
-        npm run prettier
-        npm run eslint
-        npm run stylelint
-        npm run type-check
+        npm run prettier --if-present
+        npm run eslint --if-present
+        npm run stylelint --if-present
+        npm run type-check --if-present
