@@ -8,7 +8,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2.4.0
     - name: Install helm
-      uses: azure/setup-helm@v1.1
+      uses: azure/setup-helm@v2.0
     - name: Upgrade helm deps
       env:
         HELM_EXPERIMENTAL_OCI: 1
