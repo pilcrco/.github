@@ -17,7 +17,7 @@ jobs:
         echo "REPOSITORY_OWNER=${GITHUB_REPOSITORY%/*}" >> $GITHUB_ENV
         echo "REPOSITORY_NAME=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
     - name: Checkout
-      uses: actions/checkout@v2.4.0
+      uses: actions/checkout@v3
     - name: Install helm
       uses: azure/setup-helm@v1.1
     - name: Login helm
