@@ -17,7 +17,7 @@ jobs:
         echo "REPOSITORY_OWNER=${GITHUB_REPOSITORY%/*}" >> $GITHUB_ENV
         echo "REPOSITORY_NAME=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
     - name: Checkout
-      uses: actions/checkout@v2.4.0
+      uses: actions/checkout@v3.0.2
     - name: Login Docker
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login $REGISTRY -u $REPOSITORY_OWNER --password-stdin
     - name: Build and push docker
